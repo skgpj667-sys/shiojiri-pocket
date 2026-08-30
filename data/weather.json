@@ -1,0 +1,14 @@
+{
+  "city": "塩尻市 (長野県)",
+  "temp": 22.3,
+  "apparent_temp": 25.2,
+  "humidity": 93,
+  "wind_speed": 10.5,
+  "weather_name": "雨",
+  "weather_icon": "cloud_rain",
+  "weather_bg": "from-blue-600 to-slate-700",
+  "max_temp": 28,
+  "min_temp": 21,
+  "pop_today": 100,
+  "updated_at": "08:46"
+}

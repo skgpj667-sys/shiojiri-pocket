@@ -1,0 +1,90 @@
+[
+  {
+    "title": "夜間・休日当番医",
+    "desc": "今週末・休日の診療当番病院と薬局",
+    "icon": "stethoscope",
+    "url": "https://www.city.shiojiri.lg.jp/soshiki/28/2542.html",
+    "category": "health",
+    "badge": "緊急医療"
+  },
+  {
+    "title": "地域振興バス「すてっぷくん」",
+    "desc": "運行ルート・時刻表・リアルタイム位置",
+    "icon": "bus",
+    "url": "https://www.city.shiojiri.lg.jp/soshiki/33/3119.html",
+    "category": "transit",
+    "badge": "交通"
+  },
+  {
+    "title": "しおじり生活応援券",
+    "desc": "物価高騰対策事業・取扱店舗一覧",
+    "icon": "gift",
+    "url": "https://www.city.shiojiri.lg.jp/soshiki/29/60700.html",
+    "category": "living",
+    "badge": "生活支援"
+  },
+  {
+    "title": "ごみ収集カレンダー・分別",
+    "desc": "地区別収集日程と資源物分別ガイド",
+    "icon": "trash-2",
+    "url": "https://www.city.shiojiri.lg.jp/soshiki/17/3001.html",
+    "category": "living",
+    "badge": "くらし"
+  },
+  {
+    "title": "塩尻市防災ハザードマップ",
+    "desc": "土砂災害・洪水避難所マップ",
+    "icon": "shield-alert",
+    "url": "https://www.city.shiojiri.lg.jp/site/bousai/",
+    "category": "disaster",
+    "badge": "防災"
+  },
+  {
+    "title": "塩尻市観光ガイド（時めぐり）",
+    "desc": "奈良井宿・桔梗ヶ原ワイナリー・木曽漆器",
+    "icon": "map-pin",
+    "url": "https://tokimeguri.jp/",
+    "category": "tourism",
+    "badge": "観光"
+  },
+  {
+    "title": "えんぱーく (塩尻市市民交流センター)",
+    "desc": "塩尻市立図書館・イベント・子育て広場",
+    "icon": "book-open",
+    "url": "https://www.city.shiojiri.lg.jp/site/enpark/",
+    "category": "culture",
+    "badge": "施設"
+  },
+  {
+    "title": "塩尻市公式 X (旧Twitter)",
+    "desc": "@shiojiri_city 市政・災害・イベント広報",
+    "icon": "twitter",
+    "url": "https://x.com/shiojiri_city",
+    "category": "sns",
+    "badge": "公式X"
+  },
+  {
+    "title": "塩尻市観光協会 公式Instagram",
+    "desc": "@shiojiri_kanko 奈良井宿・ワイナリー・観光情報",
+    "icon": "camera",
+    "url": "https://www.instagram.com/shiojiri_kanko/",
+    "category": "sns",
+    "badge": "公式インスタ"
+  },
+  {
+    "title": "塩尻市役所 公式Facebook",
+    "desc": "塩尻市役所公式フェイスブックページ",
+    "icon": "facebook",
+    "url": "https://www.facebook.com/shiojiricity/?locale=ja_JP",
+    "category": "sns",
+    "badge": "公式FB"
+  },
+  {
+    "title": "塩尻市役所 公式LINE",
+    "desc": "くらし・防災・ごみ収集・友だち追加",
+    "icon": "message-circle",
+    "url": "https://lin.ee/we70V0i",
+    "category": "sns",
+    "badge": "公式LINE"
+  }
+]

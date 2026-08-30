@@ -1,0 +1,16 @@
+{
+  "name": "しおじりPocket - 塩尻市総合ポータル",
+  "short_name": "しおじりPocket",
+  "description": "塩尻市の最新ニュース、公式HP新着、SNS、防災・イベント情報を一つに集約",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#7c2d12",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%236b21a8'/><text y='.9em' font-size='70' x='15'>🍇</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
