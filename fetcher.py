@@ -323,15 +323,15 @@ class ShiojiriFetcher:
                         "id": generate_id(link, title),
                         "title": title,
                         "url": link,
-                        "source": "塩尻市観光協会 公式",
-                        "handle": "@shiojiri_kanko",
-                        "platform": "instagram",
-                        "platform_name": "Instagram",
-                        "category": "sns",
+                        "source": "塩尻市観光協会HP",
+                        "handle": "@tokimeguri",
+                        "platform": "web",
+                        "platform_name": "観光協会HP",
+                        "category": "tourism",
                         "published_at": dt.strftime("%Y-%m-%d %H:%M"),
                         "datetime_iso": dt.isoformat(),
                         "relative_time": format_relative_time(dt),
-                        "summary": clean_desc if clean_desc else "塩尻市観光協会より最新の観光・ワイン・イベント情報が公開されました。",
+                        "summary": clean_desc if clean_desc else "塩尻市観光協会（時めぐり）より最新の観光・ワイン・イベント情報が公開されました。",
                         "tags": tags,
                         "author": "塩尻市観光協会",
                         "author_icon": "camera",
@@ -339,7 +339,7 @@ class ShiojiriFetcher:
                         "image_url": None,
                         "is_pinned": False,
                         "likes": 24 + (hash(title) % 40),
-                        "feed_type": "sns"
+                        "feed_type": "news"
                     }
                     items.append(item)
         except Exception as e:

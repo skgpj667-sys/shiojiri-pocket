@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+cloudflared.exe
+.system_generated/
+scratch/
+test_*.py
+check_*.py
+static/tunnel_url.txt
