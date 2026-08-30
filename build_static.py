@@ -69,11 +69,39 @@ html = html.replace(
     f'<div id="feed-container" class="space-y-0">{pre_rendered_cards_html}</div>'
 )
 
-# Replace absolute /static/ paths with relative ./static/ paths for GitHub Pages
+import re
+
+STATIC_DIR = os.path.join(APP_DIR, "static")
+
+with open(os.path.join(STATIC_DIR, "css", "style.css"), "r", encoding="utf-8") as f:
+    css = f.read()
+
+with open(os.path.join(STATIC_DIR, "js", "app.js"), "r", encoding="utf-8") as f:
+    js = f.read()
+
+embedded_data_js = f"""
+  // Embedded Initial Data for GitHub Pages Standalone Mode
+  window.__SHIOJIRI_INITIAL_DATA__ = {{
+    feeds: {json.dumps(items, ensure_ascii=False)},
+    weather: {json.dumps(weather, ensure_ascii=False)},
+    stats: {json.dumps(stats, ensure_ascii=False)},
+    quickLinks: {json.dumps(QUICK_LINKS, ensure_ascii=False)}
+  }};
+"""
+
+js_with_data = embedded_data_js + "\n" + js
+
+# Replace external CSS link with inline <style>
+html = re.sub(r'<link\s+rel="stylesheet"\s+href="[^"]*style\.css[^"]*">', f'<style>\n{css}\n</style>', html)
+
+# Replace external JS link with inline <script>
+html = re.sub(r'<script\s+src="[^"]*app\.js[^"]*"></script>', f'<script>\n{js_with_data}\n</script>', html)
+
+# Replace manifest and icon paths
 html = html.replace('href="/static/', 'href="./static/')
 html = html.replace('src="/static/', 'src="./static/')
 
 with open(root_index_path, "w", encoding="utf-8") as f:
     f.write(html)
 
-print(f"Generated GitHub Pages static bundle successfully with SSR cards! Total items: {len(items)}")
+print(f"Generated GitHub Pages static index.html successfully with all-in-one embedded bundle! Total items: {len(items)}")

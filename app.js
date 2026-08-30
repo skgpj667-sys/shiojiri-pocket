@@ -430,6 +430,15 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('最新情報を取得中...');
 
     try {
+      if (window.__SHIOJIRI_INITIAL_DATA__) {
+        // GitHub Pages等 静的サイト用: キャッシュを回避してページ自体をリロードし最新データを取得
+        setTimeout(() => {
+          window.location.href = window.location.pathname + '?t=' + new Date().getTime();
+        }, 800);
+        return;
+      }
+
+      // APIサーバー稼働時の処理
       const res = await fetch('/api/refresh', { method: 'POST' });
       const data = await res.json();
       await Promise.all([
@@ -442,10 +451,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(e);
       showToast('更新中にエラーが発生しました');
     } finally {
-      setTimeout(() => {
-        state.isRefreshing = false;
-        refreshIcon.classList.remove('spin-refresh');
-      }, 600);
+      if (!window.__SHIOJIRI_INITIAL_DATA__) {
+        setTimeout(() => {
+          state.isRefreshing = false;
+          refreshIcon.classList.remove('spin-refresh');
+        }, 600);
+      }
     }
   }
 
@@ -632,6 +643,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    function formatCardTime(it) {
+      if (it.relative_time && it.relative_time !== 'リアルタイム') {
+        return it.relative_time;
+      }
+      if (it.published_at) {
+        try {
+          const parts = it.published_at.split(' ');
+          if (parts.length === 2) {
+            const [datePart, timePart] = parts;
+            const [y, m, d] = datePart.split('-');
+            const [hh, mm] = timePart.split(':');
+            const now = new Date();
+            const isToday = (parseInt(m, 10) === (now.getMonth() + 1)) && (parseInt(d, 10) === now.getDate());
+            if (isToday) {
+              return `今日 ${hh}:${mm}`;
+            }
+            return `${m}/${d} ${hh}:${mm}`;
+          }
+        } catch (e) {}
+      }
+      return it.relative_time || '最新';
+    }
+
     return `
       <article class="feed-card feed-item-compact flex items-center justify-between px-3 py-2 bg-white dark:bg-slate-900 hover:bg-purple-50/50 dark:hover:bg-slate-800/80 border-b border-slate-100 dark:border-slate-800/80 transition-colors cursor-pointer group" data-id="${item.id}">
         <!-- Left: Badge, Headline, Source, Date in 2 tight rows -->
@@ -641,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${sourceBadge}
             <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">${authorDisplay}</span>
             <span class="text-[10px] text-slate-400 ml-auto shrink-0 flex items-center">
-              <i data-lucide="clock" class="w-2.5 h-2.5 mr-0.5 text-slate-400"></i>${item.relative_time}
+              <i data-lucide="clock" class="w-2.5 h-2.5 mr-0.5 text-slate-400"></i>${formatCardTime(item)}
             </span>
           </div>
 

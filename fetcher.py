@@ -69,20 +69,56 @@ def parse_date(date_str: str) -> datetime.datetime:
 
 def format_relative_time(dt: datetime.datetime) -> str:
     now = datetime.datetime.now(JST)
+    time_str = dt.strftime("%H:%M")
+    date_str = dt.strftime("%m/%d %H:%M")
     diff = now - dt
     seconds = int(diff.total_seconds())
 
-    if seconds < 0:
-        return "たった今"
-    if seconds < 60:
-        return f"{seconds}秒前"
-    if seconds < 3600:
-        return f"{seconds // 60}分前"
-    if seconds < 86400:
-        return f"{seconds // 3600}時間前"
-    if seconds < 86400 * 3:
-        return f"{seconds // 86400}日前"
-    return dt.strftime("%m/%d %H:%M")
+    if dt.date() == now.date():
+        if seconds < 60:
+            return f"今日 {time_str} (今)"
+        if seconds < 3600:
+            return f"今日 {time_str} ({seconds // 60}分前)"
+        return f"今日 {time_str}"
+    
+    if seconds < 86400 * 2 and (now.date() - dt.date()).days == 1:
+        return f"昨日 {time_str}"
+
+    return date_str
+
+def parse_yahoo_time(time_text: str) -> datetime.datetime:
+    dt_now = datetime.datetime.now(JST)
+    post_dt = dt_now
+    if not time_text:
+        return post_dt
+        
+    if "秒前" in time_text:
+        sec = int(re.sub(r'\D', '', time_text))
+        post_dt = dt_now - datetime.timedelta(seconds=sec)
+    elif "分前" in time_text:
+        minute = int(re.sub(r'\D', '', time_text))
+        post_dt = dt_now - datetime.timedelta(minutes=minute)
+    elif "時間前" in time_text:
+        hour = int(re.sub(r'\D', '', time_text))
+        post_dt = dt_now - datetime.timedelta(hours=hour)
+    elif ":" in time_text and "月" not in time_text:
+        try:
+            hh, mm = map(int, time_text.split(':'))
+            post_dt = dt_now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+            if post_dt > dt_now:
+                post_dt -= datetime.timedelta(days=1)
+        except:
+            pass
+    elif "月" in time_text and "日" in time_text:
+        try:
+            match = re.search(r'(\d+)月(\d+)日\s*(\d+):(\d+)', time_text)
+            if match:
+                mo, da, hh, mm = map(int, match.groups())
+                post_dt = dt_now.replace(month=mo, day=da, hour=hh, minute=mm, second=0, microsecond=0)
+        except:
+            pass
+            
+    return post_dt
 
 def extract_tags(title: str, summary: str) -> List[str]:
     tags = []
@@ -357,13 +393,29 @@ class ShiojiriFetcher:
                     if not body_el:
                         continue
                     body_text = body_el.get_text(separator=' ').strip()
-                    time_link = div.find('a', href=re.compile(r'twitter\.com|x\.com'))
-                    post_url = time_link['href'] if time_link and 'href' in time_link.attrs else "https://x.com/shiojiri_city"
+                    
+                    # URL抽出
+                    post_url_el = div.find('a', href=re.compile(r'/status/'))
+                    fallback_el = div.find('a', href=re.compile(r'twitter\.com|x\.com'))
+                    post_url = "https://x.com/shiojiri_city"
+                    if post_url_el and 'href' in post_url_el.attrs:
+                        post_url = post_url_el['href']
+                    elif fallback_el and 'href' in fallback_el.attrs:
+                        post_url = fallback_el['href']
+
                     if post_url in seen_urls or len(body_text) < 6:
                         continue
                     seen_urls.add(post_url)
 
+                    # 時刻抽出（確実に <time> タグから）
+                    time_el = div.find('time')
+                    time_text = time_el.text.strip() if time_el else ""
+                    post_dt = parse_yahoo_time(time_text)
                     dt_now = datetime.datetime.now(JST)
+                    
+                    # 時刻の整形 ("12:47" -> "今日 12:47", "3分前" -> "3分前")
+                    rel_time = f"今日 {time_text}" if time_text and ":" in time_text else (time_text if time_text else dt_now.strftime("今日 %H:%M"))
+
                     tags = extract_tags(body_text, body_text)
                     tags.insert(0, "#塩尻市公式X")
                     tags = list(dict.fromkeys(tags))
@@ -377,9 +429,9 @@ class ShiojiriFetcher:
                         "platform": "x",
                         "platform_name": "X (旧Twitter)",
                         "category": "sns",
-                        "published_at": dt_now.strftime("%Y-%m-%d %H:%M"),
-                        "datetime_iso": dt_now.isoformat(),
-                        "relative_time": "リアルタイム",
+                        "published_at": post_dt.strftime("%Y-%m-%d %H:%M"),
+                        "datetime_iso": post_dt.isoformat(),
+                        "relative_time": rel_time,
                         "summary": body_text,
                         "tags": tags,
                         "author": "塩尻市公式",
@@ -405,11 +457,25 @@ class ShiojiriFetcher:
                         continue
                     body_text = body_el.get_text(separator=' ').strip()
 
-                    time_link = div.find('a', href=re.compile(r'twitter\.com|x\.com'))
-                    post_url = time_link['href'] if time_link and 'href' in time_link.attrs else "https://search.yahoo.co.jp/realtime/search?p=%E5%A1%A9%E5%B0%BB%E5%B8%82"
+                    # URL抽出
+                    post_url_el = div.find('a', href=re.compile(r'/status/'))
+                    fallback_el = div.find('a', href=re.compile(r'twitter\.com|x\.com'))
+                    post_url = "https://search.yahoo.co.jp/realtime/search?p=%E5%A1%A9%E5%B0%BB%E5%B8%82"
+                    if post_url_el and 'href' in post_url_el.attrs:
+                        post_url = post_url_el['href']
+                    elif fallback_el and 'href' in fallback_el.attrs:
+                        post_url = fallback_el['href']
+
                     if post_url in seen_urls:
                         continue
                     seen_urls.add(post_url)
+
+                    # 時刻抽出（確実に <time> タグから）
+                    time_el = div.find('time')
+                    time_text = time_el.text.strip() if time_el else ""
+                    post_dt = parse_yahoo_time(time_text)
+                    dt_now = datetime.datetime.now(JST)
+                    rel_time = f"今日 {time_text}" if time_text and ":" in time_text else (time_text if time_text else dt_now.strftime("今日 %H:%M"))
 
                     # Filter spam / adult
                     if any(ng in body_text for ng in ["会える", "LINE交換", "裏垢", "オナ", "即ハメ", "稼げる"]):
@@ -418,7 +484,6 @@ class ShiojiriFetcher:
                     if len(body_text) < 6:
                         continue
 
-                    dt_now = datetime.datetime.now(JST)
                     tags = extract_tags(body_text, body_text)
                     tags.insert(0, "#塩尻Xポスト")
                     tags = list(dict.fromkeys(tags))
@@ -434,9 +499,9 @@ class ShiojiriFetcher:
                         "platform": "x",
                         "platform_name": "X (旧Twitter)",
                         "category": "sns",
-                        "published_at": dt_now.strftime("%Y-%m-%d %H:%M"),
-                        "datetime_iso": dt_now.isoformat(),
-                        "relative_time": "リアルタイム",
+                        "published_at": post_dt.strftime("%Y-%m-%d %H:%M"),
+                        "datetime_iso": post_dt.isoformat(),
+                        "relative_time": rel_time,
                         "summary": body_text,
                         "tags": tags,
                         "author": "塩尻市公式" if is_official else author,

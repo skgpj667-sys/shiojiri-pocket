@@ -1,62 +1,62 @@
 {
   "counts": {
-    "all": 148,
+    "all": 147,
     "hp": 105,
-    "news": 43,
-    "sns": 17,
-    "event": 28,
+    "news": 42,
+    "sns": 21,
+    "event": 26,
     "disaster": 4
   },
   "popular_tags": [
     {
       "tag": "#塩尻市",
-      "count": 86
-    },
-    {
-      "tag": "#イベント",
-      "count": 28
+      "count": 92
     },
     {
       "tag": "#ワイン・グルメ",
-      "count": 25
+      "count": 27
     },
     {
-      "tag": "#くらし・行政",
-      "count": 19
-    },
-    {
-      "tag": "#子育て",
-      "count": 19
+      "tag": "#イベント",
+      "count": 26
     },
     {
       "tag": "#塩尻Xポスト",
+      "count": 21
+    },
+    {
+      "tag": "#子育て",
+      "count": 18
+    },
+    {
+      "tag": "#くらし・行政",
       "count": 17
     },
     {
-      "tag": "#観光・おでかけ",
-      "count": 11
+      "tag": "#交通",
+      "count": 8
     },
     {
       "tag": "#市民タイムス",
       "count": 7
     },
     {
-      "tag": "#Digital PR Platform",
-      "count": 7
-    },
-    {
-      "tag": "#交通",
+      "tag": "#信濃毎日新聞デジタル",
       "count": 6
     },
     {
       "tag": "#Yahoo!ニュース",
-      "count": 5
+      "count": 6
     },
     {
-      "tag": "#信濃毎日新聞デジタル",
-      "count": 5
+      "tag": "#Digital PR Platform",
+      "count": 6
+    },
+    {
+      "tag": "#観光・おでかけ",
+      "count": 6
     }
   ],
-  "total_items": 165,
-  "updated_at": "2026-08-30 12:00"
+  "total_items": 168,
+  "updated_at": "2026-08-31 07:12"
 }
